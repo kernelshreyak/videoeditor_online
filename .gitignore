@@ -1,3 +1,5 @@
 __pycache__/*
-*.mp4
 venv/*
+clips/*
+*.mp3
+*.mp4

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  	<!-- <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" /> -->
+	<title>Video Editor Online</title>
+</head>
+<body>
+	<h2 align="center">Video Editor Online</h2>
+
+	<div class="container-fluid">
+		<br><br>
+		<div class="row">
+			<div class="col-lg-6">
+				<div align="center" class="row">
+				<b>Video Render Preview</b><br>
+				<div style="width: 100%;max-width: 100%;">
+					<video id="render" controls></video>
+				</div>
+			</div>
+			</div>
+
+			<div class="col-lg-6">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label for="fileinput">Upload Video File:</label>
+						<input type="file" id="fileinput" accept="video/*">
+					</div>
+					<br>
+					<button class="btn btn-primary" onclick="uploadVideoFile()">Upload</button>
+				</div>
+				<div class="col-sm-12" style="padding: 50px;">
+					 <div class="progress">
+
+					  <div id="uploadprogress" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="70"
+					  aria-valuemin="0" aria-valuemax="100" style="width:0%">
+					    
+					  </div>
+					</div> 
+				</div>
+				<div align="center">
+					<button class="btn btn-danger" onclick="reloadOriginalVideo()">Reload Original Video</button>
+					<h3>Trim Video</h3>
+					<div class="form-group">
+						<div class="col-sm-4">
+							<label for="start">Start:</label>
+							<input min="0" max="120" type="number" id="trim_start" value="0">
+						</div>
+						<div class="col-sm-4">
+							<label for="end">End:</label>
+							<input min="0" max="120" type="number" id="trim_end" value="0">
+						</div>
+						<div class="col-sm-3">
+							<button class="btn btn-warning" onclick="editVideoSubmit('trim')">Trim</button>
+						</div>		
+					</div>
+				</div>
+			</div>
+		</div>
+			
+		
+		
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<!-- <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script> -->
+
+	<script type="text/javascript">
+		var videorenderfile = undefined;  //original video file
+
+		function updateProgressBar(percent){
+			$("#uploadprogress").css('width',percent+"%");
+			$("#uploadprogress").html(percent+"%");
+		}
+
+		function setRenderVideo(file){
+			$("#render").attr('src',window.location.href + file);
+		}
+
+		function reloadOriginalVideo(){
+			setRenderVideo(videorenderfile);
+			toastr.success("Original video reloaded");
+		}
+
+		function editVideoSubmit(actiontype){
+			if(videorenderfile === undefined){
+				alert("Video is empty!");
+				return;
+			}
+			let editor_payload = {};
+
+			if(actiontype == "trim"){
+				editor_payload = {
+					trim_start: $("#trim_start").val(),
+					trim_end: $("#trim_end").val()
+				} 
+			}
+
+			editor_payload.videofile = videorenderfile;
+
+			// send edit request to backend and render the preview returned by server
+			$.post("/edit_video/" + actiontype,editor_payload,function(res){
+				// console.log("Editor Response",res);
+				if(res.status == "success"){
+					setRenderVideo(res.edited_videopath);
+					toastr.success(res.message);
+				}
+				else{
+					toastr.error(res.message);
+				}
+			});
+		}
+
+
+
+		function uploadVideoFile() {
+			updateProgressBar(0);
+
+		  	let filedata = document.getElementById('fileinput').files[0];
+		  	if(!filedata){
+		  		alert("File is empty!");
+		  		return;
+		  	}	
+
+		  	const config = {
+		    	onUploadProgress: function(progressEvent) {
+		      	var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+		      	// console.log(percentCompleted)
+		      	updateProgressBar(percentCompleted);
+			      
+		    	}
+		  	}
+
+		  	let data = new FormData()
+		  	data.append('videofile', filedata);
+
+		  	axios.post('/upload_video', data, config)
+		    	.then(res => {
+		    		console.log(res);
+		    		videorenderfile = res.data; 		
+		    		toastr.success('Video uploaded!');
+		    		setRenderVideo(videorenderfile);
+		    		
+		    	})
+		    	.catch(err => console.log(err))
+		}
+	</script>
+</body>
+</html>
+
+

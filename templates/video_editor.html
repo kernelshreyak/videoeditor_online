@@ -35,6 +35,7 @@
 		video {
 		  width: 100%;
 		  height: auto;
+		  max-height: 500px;
 		}
 
 		.videodiv{
@@ -119,7 +120,21 @@
 
 				</div>
 			</div>
-				
+		
+		<!-- Loader Modal -->
+<div id="loaderModal" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div align="center" >
+      	<div class="loader"></div> <br>
+      	<b>Rendering... Please wait</b>
+      </div>
+    </div>
+
+  </div>
+</div>
 			
 			
 		</div>
@@ -146,6 +161,10 @@
 			}
 		}
 
+		function setLoader(status = true){
+			if(status) $("#loaderModal").modal("show");
+			else $("#loaderModal").modal("hide");
+		}
 
 		var app = new Vue({
 	      el: '#app',
@@ -166,6 +185,8 @@
 
 			editVideoSubmit: function(videoID,actiontype){
 				console.log("editVideoSubmit",videoID);
+				setLoader(true);
+
 				let video = this.videos[videoID].file;
 				
 				if(video === undefined){
@@ -187,6 +208,7 @@
 				// send edit request to backend and render the preview returned by server
 				$.post("/edit_video/" + actiontype,editor_payload,function(res){
 					// console.log("Editor Response",res);
+					setLoader(false);
 					if(res.status == "success"){
 						app.videos[videoID].file = res.edited_videopath;
 						app.setRenderVideo(videoID);

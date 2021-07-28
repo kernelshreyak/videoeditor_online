@@ -58,12 +58,24 @@ def editVideo(actiontype):
 @app.route('/merged_render',methods=['POST'])
 def mergedRender():
 	try:
-		finalrender_videopath = mergeVideos(request.form['videoclip_filenames'])
-		return {
-				"status": "success",
-				"message": "merged render success",
-				"finalrender_videopath": finalrender_videopath
-			}
+		videoscount = int(request.form['videoscount'])
+		if videoscount > 0:
+			videoclip_filenames = []
+			for i in range(videoscount):
+				videoclip_filenames.append(request.form['video' + str(i)])
+
+			finalrender_videopath = mergeVideos(videoclip_filenames)
+			return {
+					"status": "success",
+					"message": "merged render success",
+					"finalrender_videopath": finalrender_videopath
+				}
+		else:
+			return {
+					"status": "error",
+					"message": "merged render error. Invalid videos count"
+				}
+		
 	except Exception as e:
 		return {
 			"status": "error",

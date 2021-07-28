@@ -12,9 +12,14 @@ def trimVideo(videofile: str,start_time: int,end_time: int):
 	return trimpath
 
 
-def mergeVideos(videoclips):
-	final_clip = concatenate_videoclips(videoclips)
-	finalpath = "finalrender_" + str(int(time.time())) + ".mp4"
+def mergeVideos(videoclip_filenames):
+
+	videoclips = []
+	for filename in videoclip_filenames:
+		videoclips.append(VideoFileClip(filename))
+
+	final_clip = concatenate_videoclips(videoclips,method="compose")
+	finalpath = "clips/finalrender_" + str(int(time.time())) + ".mp4"
 	final_clip.write_videofile(finalpath)
 	return finalpath
 

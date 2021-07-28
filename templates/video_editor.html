@@ -118,8 +118,9 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-3">
-						<button class="btn btn-success" v-on:click="">Final Render</button>
+					<br> <br>
+					<div v-if="videos.length > 0" class="col-sm-3">
+						<button class="btn btn-success" v-on:click="finalrender">Merge Clips</button>
 					</div>	
 				</div>
 			</div>
@@ -276,6 +277,31 @@
 			    		
 			    	})
 			    	.catch(err => console.log(err))
+			},
+
+			finalrender: function(){
+				setLoader(true);
+
+				let requestobj = {videoscount: this.videos.length}
+				for(let i=0;i<this.videos.length;i++){
+					requestobj['video' + i] = this.videos[i].file;
+				}
+
+				console.log("requestobj",requestobj);
+
+				$.post("/merged_render",requestobj,function(res){
+					console.log(res);
+
+					if(res.status == "success"){
+						toastr.success("Final render success!");
+						$("#render").attr('src',window.location.href + res.finalrender_videopath);
+					}
+					else{
+						toastr.error("Final render ERROR: " + res.message);
+					}
+					
+					setLoader(false);
+				});
 			}
 	      },
 	      // created() {

@@ -92,12 +92,13 @@
 			
 					<div class="row videodiv" v-for="(video,index) in videos" :key="index">
 						<h3><u>[[video.name]]</u> </h3>
-						<button v-on:click="setRenderVideo(index)" class="btn btn-success">Render</button>
-						<!-- <button  class="btn btn-danger">Undo</button> -->
-						<div align="center">
-							<!-- <button class="btn btn-danger" v-on:click="reloadOriginalVideo">
+						<button v-on:click="setRenderVideo(index)" class="btn btn-success">Render/Preview</button>
+						<button v-on:click="removeVideo(index)" class="btn btn-danger">Remove</button>
+						<button class="btn btn-default" v-on:click="reloadOriginalVideo(index)">
 							Reload Original Video
-						    </button> -->
+						 </button>
+						<div align="center">
+							
 							<h4>Video Effects</h4>
 							<b>Trim</b>
 							<div class="form-group">
@@ -117,7 +118,9 @@
 							</div>
 						</div>
 					</div>
-
+					<div class="col-sm-3">
+						<button class="btn btn-success" v-on:click="">Final Render</button>
+					</div>	
 				</div>
 			</div>
 		
@@ -169,18 +172,32 @@
 		var app = new Vue({
 	      el: '#app',
 	      data: {
-	        videos: [],  //all video clips added by user
+	        originalvideos: [],  //original video clips added by user
+			videos: [],  //current clips being edited
 	      },
 	      delimiters: ['[[',']]'],
 	      methods: {
 
 	      	addVideo: function(){
-	      		this.videos.push({});
+	      		this.originalvideos.push({});
+				this.videos.push({});  
 	      	},
 
 			setRenderVideo: function(videoID){
-				console.log("videoID",videoID);
+				// console.log("videoID",videoID);
 				$("#render").attr('src',window.location.href + this.videos[videoID].file);
+			},
+
+			reloadOriginalVideo: function(videoID){
+				this.videos[videoID] = {name:this.originalvideos[videoID].name,file:this.originalvideos[videoID].file};
+				app.setRenderVideo(videoID);
+			},
+
+			removeVideo: function(videoID){
+				// permanently removes the video
+				this.videos.splice(videoID,1);
+				this.originalvideos.splice(videoID,1);
+				$("#render").attr('src',"");
 			},
 
 			editVideoSubmit: function(videoID,actiontype){
@@ -250,7 +267,8 @@
 			    	.then(res => {
 			    		console.log(res);
 			 
-			    		this.videos.push({name:clipname,file:res.data});
+			    		this.originalvideos.push({name:clipname,file:res.data});
+						this.videos.push({name:clipname,file:res.data});
 	    		 		console.log("videos",this.videos);
 			    		toastr.success('Video uploaded!');
 

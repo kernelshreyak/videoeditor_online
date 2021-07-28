@@ -5,6 +5,7 @@ from flask import send_file
 
 from video_utils import *
 from config import *
+import os
 
 app = Flask(__name__)
 
@@ -21,6 +22,9 @@ def renderClip(filename):
 # Uploads a video file to server and returns filename
 @app.route('/upload_video',methods=['POST'])
 def uploadVideo():
+	# check if video savepath exists
+	if  not os.path.isdir("./clips"):
+		os.mkdir("./clips")
 	try:
 		videofile = request.files['videofile']
 		filepath = video_savepath + videofile.filename
@@ -30,7 +34,10 @@ def uploadVideo():
 
 	return str(filepath)
 
-# Main video 
+
+
+
+# Main video editing pipeline
 @app.route('/edit_video/<actiontype>',methods=['POST'])
 def editVideo(actiontype):
 	if actiontype == "trim":
@@ -48,3 +55,18 @@ def editVideo(actiontype):
 			}
 
     
+@app.route('/merged_render',methods=['POST'])
+def mergedRender():
+	try:
+		finalrender_videopath = mergeVideos(request.form['videoclip_filenames'])
+		return {
+				"status": "success",
+				"message": "merged render success",
+				"finalrender_videopath": finalrender_videopath
+			}
+	except Exception as e:
+		return {
+			"status": "error",
+			"message": "video merge failure: " + str(e),
+		}
+

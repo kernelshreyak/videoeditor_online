@@ -7,17 +7,15 @@ from video_utils import trimVideo, mergeVideos
 from config import config
 import os
 
-app = Flask(__name__)
+app = Flask(__name__,static_folder="./frontend/dist/assets",template_folder="./frontend/dist")
 
 @app.route('/')
 def hello_world():
-    return render_template("video_editor.html")
-
-
+    return render_template("index.html")
 
 @app.route('/clips/<filename>')
 def render_clip(filename):
-	return send_file(config.video_savepath + filename)
+	return send_file(config['video_savepath'] + filename)
 
 # Uploads a video file to server and returns filename
 @app.route('/upload_video',methods=['POST'])
@@ -27,7 +25,7 @@ def upload_video():
 		os.mkdir("./clips")
 	try:
 		videofile = request.files['videofile']
-		filepath = config.video_savepath + videofile.filename
+		filepath = config['video_savepath'] + videofile.filename
 		videofile.save(filepath)
 	except FileNotFoundError:
 		return "ERROR"

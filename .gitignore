@@ -3,3 +3,5 @@ venv/*
 clips/*
 *.mp3
 *.mp4
+frontend/node_modules
+templates/dist

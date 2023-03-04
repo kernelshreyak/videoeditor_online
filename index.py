@@ -3,7 +3,7 @@ from flask import request
 from flask import render_template
 from flask import send_file
 
-from video_utils import *
+from video_utils import trimVideo, mergeVideos
 from config import config
 import os
 
@@ -16,12 +16,12 @@ def hello_world():
 
 
 @app.route('/clips/<filename>')
-def renderClip(filename):
+def render_clip(filename):
 	return send_file(config.video_savepath + filename)
 
 # Uploads a video file to server and returns filename
 @app.route('/upload_video',methods=['POST'])
-def uploadVideo():
+def upload_video():
 	# check if video savepath exists
 	if  not os.path.isdir("./clips"):
 		os.mkdir("./clips")
@@ -29,7 +29,7 @@ def uploadVideo():
 		videofile = request.files['videofile']
 		filepath = config.video_savepath + videofile.filename
 		videofile.save(filepath)
-	except:
+	except FileNotFoundError:
 		return "ERROR"
 
 	return str(filepath)
@@ -39,7 +39,7 @@ def uploadVideo():
 
 # Main video editing pipeline
 @app.route('/edit_video/<actiontype>',methods=['POST'])
-def editVideo(actiontype):
+def edit_video(actiontype):
 	if actiontype == "trim":
 		try:
 			edited_videopath = trimVideo(request.form['videofile'],int(request.form['trim_start']),int(request.form['trim_end']))
@@ -56,7 +56,7 @@ def editVideo(actiontype):
 
     
 @app.route('/merged_render',methods=['POST'])
-def mergedRender():
+def merged_render():
 	try:
 		videoscount = int(request.form['videoscount'])
 		if videoscount > 0:

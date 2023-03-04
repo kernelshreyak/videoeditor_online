@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
 	<meta charset="utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,6 @@
   	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  	<!-- <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" /> -->
 	<title>Video Editor Online</title>
 
 	<style>
@@ -48,13 +47,13 @@
 </head>
 <body>
 	<div id="app">
-		<h2 align="center">Video Editor Online</h2>
+		<h2 class="align-center">Video Editor Online</h2>
 
 		<div class="container-fluid">
 			<br><br>
 			<div class="row">
 				<div class="col-lg-6">
-					<div align="center" class="row">
+					<div class="align-center" class="row">
 					<b>Video Render Preview</b><br>
 					<div style="width: 100%;max-width: 100%;">
 						<video id="render" controls></video>
@@ -97,7 +96,7 @@
 						<button class="btn btn-default" v-on:click="reloadOriginalVideo(index)">
 							Reload Original Video
 						 </button>
-						<div align="center">
+						<div class="align-center">
 							
 							<h4>Video Effects</h4>
 							<b>Trim</b>
@@ -131,7 +130,7 @@
 
     <!-- Modal content-->
     <div class="modal-content">
-      <div align="center" >
+      <div class="align-center" >
       	<div class="loader"></div> <br>
       	<b>Rendering... Please wait</b>
       </div>
@@ -144,14 +143,11 @@
 		</div>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-  	<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script> -->
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-	<!-- <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script> -->
-
 	<script type="text/javascript">
 
 		function updateProgressBar(percent){
@@ -185,7 +181,6 @@
 	      	},
 
 			setRenderVideo: function(videoID){
-				// console.log("videoID",videoID);
 				$("#render").attr('src',window.location.href + this.videos[videoID].file);
 			},
 
@@ -225,7 +220,6 @@
 				console.log("editor_payload",editor_payload);
 				// send edit request to backend and render the preview returned by server
 				$.post("/edit_video/" + actiontype,editor_payload,function(res){
-					// console.log("Editor Response",res);
 					setLoader(false);
 					if(res.status == "success"){
 						app.videos[videoID].file = res.edited_videopath;

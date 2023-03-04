@@ -1,2 +1,4 @@
 # Config variables for Video Editor Online
-video_savepath = "clips/"
+config = {
+    "video_savepath": "clips/"
+}

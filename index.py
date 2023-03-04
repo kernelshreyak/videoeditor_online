@@ -4,7 +4,7 @@ from flask import render_template
 from flask import send_file
 
 from video_utils import *
-from config import *
+from config import config
 import os
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ def hello_world():
 
 @app.route('/clips/<filename>')
 def renderClip(filename):
-	return send_file(video_savepath + filename)
+	return send_file(config.video_savepath + filename)
 
 # Uploads a video file to server and returns filename
 @app.route('/upload_video',methods=['POST'])
@@ -27,7 +27,7 @@ def uploadVideo():
 		os.mkdir("./clips")
 	try:
 		videofile = request.files['videofile']
-		filepath = video_savepath + videofile.filename
+		filepath = config.video_savepath + videofile.filename
 		videofile.save(filepath)
 	except:
 		return "ERROR"

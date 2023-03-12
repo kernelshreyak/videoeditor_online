@@ -22,7 +22,7 @@ source venv/bin/activate
 ```
 For windows, run the **start-windows.bat** file
 
-3. Start the Vue frontend
+3.  Start the Vue frontend
 ```bash
 cd frontend
 npm run dev

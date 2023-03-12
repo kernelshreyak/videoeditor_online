@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import request
 from flask import send_file
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 from video_utils import trimVideo, mergeVideos
 from config import config

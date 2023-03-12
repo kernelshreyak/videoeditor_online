@@ -1,9 +1,8 @@
 ## Video Editor Online
 
-Web based video editor created in VueJS frontend and Python,Flask backend with MoviePy
+Web based video editor created in VueJS frontend and Python,Flask backend with MoviePy. A new frontend is being created in Vue3.
 
 Features planned for now:
--   VueJS v3 usage for improved UI
 -   Upload multiple video, audio and image files
 -   All basic video operations: Trim, Join, Rotate
 -   Simple transitions

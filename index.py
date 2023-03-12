@@ -1,17 +1,22 @@
 from flask import Flask
 from flask import request
-from flask import render_template
 from flask import send_file
+from flask_cors import CORS, cross_origin
 
 from video_utils import trimVideo, mergeVideos
 from config import config
 import os
 
 app = Flask(__name__,static_folder="./frontend/dist/assets",template_folder="./frontend/dist")
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/')
 def hello_world():
-    return render_template("index.html")
+    return {
+		"status": "success",
+		"message": "Video editor backend"
+	}
 
 @app.route('/clips/<filename>')
 def render_clip(filename):
@@ -33,14 +38,12 @@ def upload_video():
 	return str(filepath)
 
 
-
-
 # Main video editing pipeline
 @app.route('/edit_video/<actiontype>',methods=['POST'])
 def edit_video(actiontype):
 	if actiontype == "trim":
 		try:
-			edited_videopath = trimVideo(request.form['videofile'],int(request.form['trim_start']),int(request.form['trim_end']))
+			edited_videopath = trimVideo(request.json['videofile'],int(request.json['trim_start']),int(request.json['trim_end']))
 			return {
 				"status": "success",
 				"message": "video edit success",
@@ -56,11 +59,11 @@ def edit_video(actiontype):
 @app.route('/merged_render',methods=['POST'])
 def merged_render():
 	try:
-		videoscount = int(request.form['videoscount'])
+		videoscount = int(request.json['videoscount'])
 		if videoscount > 0:
 			videoclip_filenames = []
 			for i in range(videoscount):
-				videoclip_filenames.append(request.form['video' + str(i)])
+				videoclip_filenames.append(request.json['video' + str(i)])
 
 			finalrender_videopath = mergeVideos(videoclip_filenames)
 			return {

@@ -49,14 +49,25 @@
 					</div>
 			
 					<div class="row videodiv" v-for="(video,index) in videos" :key="index">
-						<h3><u>{{ video.name }}</u> </h3>
-						<button v-on:click="() => {setRenderVideo(index)}" class="btn btn-success">Render/Preview</button>
-						<button v-on:click="() => {removeVideo(index)}" class="btn btn-danger">Remove</button>
-						<button class="btn btn-primary btn-sm" v-on:click="reloadOriginalVideo(index)">
+                        <div class="video-card-head">
+                            <input :disabled="true" type="text" :value="video.name" />
+                            <h3><u></u> </h3>
+                            <div>
+                                <i v-on:click="() => {}" class="bi bi-pencil" style="font-size: 30px;color: green; cursor: pointer;"></i>
+
+                                <i v-on:click="() => {removeVideo(index)}" class="bi bi-trash" style="font-size: 30px;color: red; cursor: pointer;margin-left: 1rem;"></i>
+                            </div>
+
+                        </div>
+						
+
+						<div class="video-controls" style="margin-top: 1rem;">
+                            <button v-on:click="() => {setRenderVideo(index)}" class="btn btn-success video-ctrl-btn">Render/Preview</button>
+						<button class="btn btn-primary btn-sm video-ctrl-btn" v-on:click="reloadOriginalVideo(index)">
 							Reload Original Video
 						 </button>
-						<div class="align-center">
-							
+                        </div>
+						<div class="align-center" style="margin-top: 50px;">
 							<h4>Video Effects</h4>
 							<b>Trim</b>
 							<div class="form-group">
@@ -146,6 +157,14 @@
     background-color: #9bc6db !important;
 }
 
+.video-ctrl-btn {
+    width: 20%;
+    margin-left: 1rem;
+}
+.video-card-head {
+    display: flex;
+    justify-content: space-between;
+}
 </style>
 
 <script>

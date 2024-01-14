@@ -18,9 +18,9 @@ pip install -r requirements.txt
 2.  Start the Flask server (Linux, MacOS)
 ```bash
 source venv/bin/activate
-./start  
+./start-server  
 ```
-For windows, run the **start-windows.bat** file
+For windows, run the **start-server-windows.bat** file
 
 3.  Start the Vue frontend
 ```bash

@@ -17,7 +17,9 @@
           <div v-else>
             <div class="alert alert-warning">No video loaded</div>
           </div>
+          <TimelineEditor />
 				</div>
+                
 				</div>
 
 				<div class="col-lg-6">
@@ -172,6 +174,7 @@ import axios from 'axios';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 import CustomLoader from './components/CustomLoader.vue';
+import TimelineEditor from './components/TimelineEditor.vue';
 const apiBaseUrl = "http://localhost:5000";
 
 export default {
@@ -285,6 +288,6 @@ export default {
             });
         }
     },
-    components: { CustomLoader }
+    components: { CustomLoader,TimelineEditor }
 }
 </script>

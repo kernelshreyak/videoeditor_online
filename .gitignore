@@ -5,3 +5,4 @@ clips/*
 *.mp4
 frontend/node_modules
 templates/dist
+backend/__pycache__

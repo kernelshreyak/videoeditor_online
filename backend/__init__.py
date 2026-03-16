@@ -5,7 +5,7 @@ from flask import Flask, request, send_file
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
-from .config import CLIPS_DIR
+from .config import ALLOWED_EXTENSIONS, CLIPS_DIR, MAX_UPLOAD_SIZE
 from .video_utils import ensure_clips_dir, merge_videos, trim_video
 
 FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
@@ -37,8 +37,36 @@ def create_app() -> Flask:
         if videofile is None or videofile.filename == "":
             return {"status": "error", "message": "No video file provided"}, 400
 
+        # Validate file extension
+        filename = videofile.filename or ""
+        file_ext = Path(filename).suffix.lower()
+        if file_ext not in ALLOWED_EXTENSIONS:
+            return {
+                "status": "error",
+                "message": f"Invalid file type. Allowed extensions: {', '.join(sorted(ALLOWED_EXTENSIONS))}",
+            }, 400
+
+        # Validate MIME type
+        if videofile.content_type and not videofile.content_type.startswith("video/"):
+            return {
+                "status": "error",
+                "message": f"Invalid MIME type. Expected video/*, got {videofile.content_type}",
+            }, 400
+
+        # Validate file size
+        videofile.seek(0, 2)  # Seek to end
+        file_size = videofile.tell()
+        videofile.seek(0)  # Reset to beginning
+
+        if file_size > MAX_UPLOAD_SIZE:
+            max_mb = MAX_UPLOAD_SIZE / (1024 * 1024)
+            return {
+                "status": "error",
+                "message": f"File too large. Maximum size: {max_mb:.0f}MB",
+            }, 400
+
         ensure_clips_dir()
-        safe_name = secure_filename(videofile.filename)
+        safe_name = secure_filename(filename)
         target_path = CLIPS_DIR / safe_name
         videofile.save(target_path)
 

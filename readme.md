@@ -37,3 +37,8 @@ npm run dev
 - Frontend scripts: `npm run dev`, `npm run build`, `npm run preview`, `npm run lint`, `npm run format`.
 - Adjust backend behavior in `backend/video_utils.py`; ensure new outputs stay under `clips/`.
 - Keep responses JSON-friendly and handle missing/invalid inputs; the frontend expects relative clip paths like `clips/<file>`.
+
+
+
+### Application Screenshot
+![Application Screenshot](screenshot1.jpg)

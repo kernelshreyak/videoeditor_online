@@ -1,21 +1,7 @@
 from pathlib import Path
+from typing import Set
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-CLIPS_DIR = BASE_DIR / "clips"
-
-# Upload limits
-MAX_UPLOAD_SIZE = 500 * 1024 * 1024  # 500 MB in bytes
-
-# Allowed video file extensions
-ALLOWED_EXTENSIONS = {
-    ".mp4",
-    ".avi",
-    ".mov",
-    ".mkv",
-    ".webm",
-    ".flv",
-    ".wmv",
-    ".m4v",
-    ".mpg",
-    ".mpeg",
-}
+# Configuration
+CLIPS_DIR = Path("clips")
+MAX_UPLOAD_SIZE = 100 * 1024 * 1024  # 100MB
+ALLOWED_EXTENSIONS: Set[str] = {".mp4", ".avi", ".mov", ".mkv", ".webm"}
